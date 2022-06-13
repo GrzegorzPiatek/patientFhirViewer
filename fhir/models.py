@@ -8,9 +8,18 @@
 from django.db import models
 
 
+class Patient(models.Model):
+    name = models.TextField()
+    gender = models.TextField()
+    birthdate = models.TextField(db_column='birthDate')  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'patient'
+
 class Medicationstatement(models.Model):
     concept = models.TextField()
-    patientid = models.TextField(db_column='patientId')  # Field name made lowercase.
+    patient = models.ForeignKey(Patient, on_delete=models.PROTECT, db_column='patient')
 
     class Meta:
         managed = False
@@ -22,19 +31,10 @@ class Observation(models.Model):
     value = models.FloatField()
     unit = models.TextField(blank=True, null=True)
     date = models.TextField(blank=True, null=True)
-    patientidentifier = models.TextField(db_column='patientIdentifier', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
+    patient = models.ForeignKey(Patient, on_delete=models.PROTECT, db_column='patient')
 
     class Meta:
         managed = False
         db_table = 'observation'
 
 
-class Patient(models.Model):
-    identifier = models.TextField()
-    name = models.TextField()
-    gender = models.TextField()
-    birthdate = models.TextField(db_column='birthDate')  # Field name made lowercase.
-
-    class Meta:
-        managed = False
-        db_table = 'patient'
